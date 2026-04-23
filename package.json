@@ -1,7 +1,7 @@
 {
   "name": "j5-agent-flow",
   "version": "1.0.0",
-  "description": "",
+  "description": "MCP Server for Topologic Agent Pipeline orchestration",
   "main": "j5-agent-flow/index.js",
   "type": "module",
   "scripts": {
@@ -12,8 +12,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "jaalorsa517",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaalorsa517/j5-agent-flow.git"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^4.3.6"

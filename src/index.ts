@@ -58,7 +58,6 @@ function registerAgents() {
         )
     }
 }
-registerAgents();
 
 function registerPrompts() {
     try {
@@ -101,10 +100,12 @@ function registerPrompts() {
         )
     }
 }
-registerPrompts();
+
 
 async function run() {
     const transport = new StdioServerTransport();
+    registerAgents();
+    registerPrompts();
     await server.connect(transport);
     server.server.sendLoggingMessage(
         { level: "info", data: "Servidor MCP iniciado correctamente" }
