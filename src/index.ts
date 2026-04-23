@@ -72,18 +72,22 @@ function registerPrompts() {
                 promptName,
                 {
                     title: promptName,
-                    description: `Carga el prompt de sistema: ${promptName}`
+                    description: `Carga el prompt de sistema: ${promptName}`,
+                    argsSchema: {
+                        requerimiento: z.string().describe("Descripción detallada del requerimiento o cambio a realizar")
+                    }
                 },
-                async () => {
+                async (args) => {
                     try {
                         const contenido = fs.readFileSync(filePath, "utf-8");
+                        const requerimientoStr = args?.requerimiento ? `\n\nREQUERIMIENTO DEL USUARIO:\n${args.requerimiento}` : "";
                         return {
                             messages: [
                                 {
                                     role: "user",
                                     content: {
                                         type: "text",
-                                        text: contenido
+                                        text: contenido + requerimientoStr
                                     }
                                 }
                             ]
