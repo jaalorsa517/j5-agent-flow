@@ -11,34 +11,16 @@ const __dirname = path.dirname(__filename);
 const AGENTS_DIR = path.join(__dirname, "agents");
 const PROMPTS_DIR = path.join(__dirname, "prompts");
 
-// 1. Inicializar el servidor MCP
+// 1. Inicializar el servidor MCP con capacidad de logging
 const server = new McpServer({
     name: "j5-agent-flow-mcp",
     version: "1.0.0"
+}, {
+    capabilities: {
+        logging: {}
+    }
 });
 
-// Función para obtener nombres de agentes disponibles
-function getAvailableAgents(): string {
-    try {
-        const files = fs.readdirSync(AGENTS_DIR).filter(f => f.endsWith('.md'));
-        return files.map(f => f.replace('.md', '')).join(', ');
-    } catch {
-        return "No se pudieron cargar los agentes";
-    }
-}
-
-// Función para obtener nombres de prompts disponibles
-function getAvailablePrompts(): string {
-    try {
-        if (!fs.existsSync(PROMPTS_DIR)) fs.mkdirSync(PROMPTS_DIR, { recursive: true });
-        const files = fs.readdirSync(PROMPTS_DIR).filter(f => f.endsWith('.md'));
-        return files.map(f => f.replace('.md', '')).join(', ');
-    } catch {
-        return "No se pudieron cargar los prompts";
-    }
-}
-
-// 2. Registrar herramientas de agentes dinámicamente
 function registerAgents() {
     try {
         if (!fs.existsSync(AGENTS_DIR)) {
@@ -71,12 +53,13 @@ function registerAgents() {
             );
         }
     } catch (err) {
-        console.error("Error registrando agentes:", err);
+        server.server.sendLoggingMessage(
+            { level: "error", data: `Error registrando agentes ${err}` }
+        )
     }
 }
 registerAgents();
 
-// 3. Registrar prompts dinámicamente
 function registerPrompts() {
     try {
         if (!fs.existsSync(PROMPTS_DIR)) {
@@ -92,32 +75,44 @@ function registerPrompts() {
                     title: promptName,
                     description: `Carga el prompt de sistema: ${promptName}`
                 },
-                () => {
-                    const contenido = fs.readFileSync(filePath, "utf-8");
-                    return {
-                        messages: [
-                            {
-                                role: "user",
-                                content: {
-                                    type: "text",
-                                    text: contenido
+                async () => {
+                    try {
+                        const contenido = fs.readFileSync(filePath, "utf-8");
+                        return {
+                            messages: [
+                                {
+                                    role: "user",
+                                    content: {
+                                        type: "text",
+                                        text: contenido
+                                    }
                                 }
-                            }
-                        ]
-                    };
+                            ]
+                        };
+                    } catch (error) {
+                        throw error;
+                    }
                 }
             );
         }
     } catch (err) {
-        console.error("Error registrando prompts:", err);
+        server.server.sendLoggingMessage(
+            { level: "error", data: `Error registrando prompts ${err}` }
+        )
     }
 }
 registerPrompts();
 
-// 4. Iniciar la comunicación por terminal (stdio)
 async function run() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
+    server.server.sendLoggingMessage(
+        { level: "info", data: "Servidor MCP iniciado correctamente" }
+    )
 }
 
-run().catch(console.error);
+run().catch(error => {
+    server.server.sendLoggingMessage(
+        { level: "error", data: `Error corriendo el servidor ${error}` }
+    )
+});

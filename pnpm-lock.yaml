@@ -15,6 +15,9 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
+      '@types/caseless':
+        specifier: ^0.12.5
+        version: 0.12.5
       '@types/node':
         specifier: ^22.0.0
         version: 22.19.17
@@ -198,6 +201,9 @@ packages:
     peerDependenciesMeta:
       '@cfworker/json-schema':
         optional: true
+
+  '@types/caseless@0.12.5':
+    resolution: {integrity: sha512-hWtVTC2q7hc7xZ/RLbxapMvDMgUnDvKvMOpKal4DrMyfGBUfB1oKaZlIRr6mJL+If3bAP6sV/QneGzF6tJjZDg==}
 
   '@types/node@22.19.17':
     resolution: {integrity: sha512-wGdMcf+vPYM6jikpS/qhg6WiqSV/OhG+jeeHT/KlVqxYfD40iYJf9/AE1uQxVWFvU7MipKRkRv8NSHiCGgPr8Q==}
@@ -686,6 +692,8 @@ snapshots:
       zod-to-json-schema: 3.25.2(zod@4.3.6)
     transitivePeerDependencies:
       - supports-color
+
+  '@types/caseless@0.12.5': {}
 
   '@types/node@22.19.17':
     dependencies:
