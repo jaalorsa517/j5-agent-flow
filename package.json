@@ -1,16 +1,25 @@
 {
-  "name": "mcp_central",
+  "name": "j5-agent-flow",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "j5-agent-flow/index.js",
+  "type": "module",
   "scripts": {
+    "build": "tsc && cp -R src/agents j5-agent-flow/ && cp -R src/prompts j5-agent-flow/ && node scripts/build-package.js",
+    "start": "node j5-agent-flow/index.js",
+    "dev": "tsx src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0"
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
   }
 }
