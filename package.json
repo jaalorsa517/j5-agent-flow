@@ -8,6 +8,7 @@
     "build": "tsc && cp -R src/agents j5-agent-flow/ && cp -R src/prompts j5-agent-flow/ && node scripts/build-package.js",
     "start": "node j5-agent-flow/index.js",
     "dev": "tsx src/index.ts",
+    "deploy": "./deploy-mcp.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

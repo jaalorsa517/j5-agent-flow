@@ -38,30 +38,43 @@ function getAvailablePrompts(): string {
     }
 }
 
-// 2. Definir herramienta usando el nuevo API (McpServer)
-server.registerTool(
-    "obtener_agente",
-    {
-        description: `Carga las instrucciones de un especialista. Agentes disponibles: ${getAvailableAgents()}`,
-        inputSchema: {
-            nombre: z.string().describe("El nombre del agente (ej. abogado, programador)")
+// 2. Registrar herramientas de agentes dinámicamente
+function registerAgents() {
+    try {
+        if (!fs.existsSync(AGENTS_DIR)) {
+            fs.mkdirSync(AGENTS_DIR, { recursive: true });
+            return;
         }
-    },
-    async ({ nombre }) => {
-        const filePath = path.join(AGENTS_DIR, `${nombre}.md`);
-
-        try {
-            const contenido = fs.readFileSync(filePath, "utf-8");
-            return {
-                content: [{ type: "text", text: `Adopta la siguiente metodología:\n\n${contenido}` }]
-            };
-        } catch (error) {
-            return {
-                content: [{ type: "text", text: `Error: No se encontró al agente '${nombre}'.` }]
-            };
+        const files = fs.readdirSync(AGENTS_DIR).filter(f => f.endsWith('.md'));
+        for (const file of files) {
+            const agentName = file.replace('.md', '');
+            const filePath = path.join(AGENTS_DIR, file);
+            server.registerTool(
+                `obtener_agente_${agentName}`,
+                {
+                    description: `Carga las instrucciones del especialista: ${agentName}`,
+                    inputSchema: z.object({})
+                },
+                async () => {
+                    try {
+                        const contenido = fs.readFileSync(filePath, "utf-8");
+                        return {
+                            content: [{ type: "text", text: `Adopta la siguiente metodología:\n\n${contenido}` }]
+                        };
+                    } catch (error) {
+                        return {
+                            content: [{ type: "text", text: `Error: No se pudo cargar el agente '${agentName}'.` }],
+                            isError: true
+                        };
+                    }
+                }
+            );
         }
+    } catch (err) {
+        console.error("Error registrando agentes:", err);
     }
-);
+}
+registerAgents();
 
 // 3. Registrar prompts dinámicamente
 function registerPrompts() {
@@ -105,9 +118,6 @@ registerPrompts();
 async function run() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.log(`Servidor MCP de Agentes iniciado.`);
-    console.log(`Agentes: ${getAvailableAgents()}`);
-    console.log(`Prompts: ${getAvailablePrompts()}`);
 }
 
 run().catch(console.error);
