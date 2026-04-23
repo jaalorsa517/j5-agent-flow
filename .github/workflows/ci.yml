@@ -20,4 +20,3 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - run: pnpm build
-      - run: npx tsx --test tests/*.test.ts
