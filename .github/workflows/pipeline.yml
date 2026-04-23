@@ -33,6 +33,11 @@ jobs:
         id: get_version
         run: echo "version=$(node -p -e "require('./package.json').version")" >> $GITHUB_OUTPUT
 
+      - name: Prepare Release Asset
+        run: |
+          cd j5-agent-flow
+          zip -r ../j5-agent-flow-v${{ steps.get_version.outputs.version }}.zip .
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
@@ -41,7 +46,6 @@ jobs:
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release ${{ steps.get_version.outputs.version }}
-          files: |
-            j5-agent-flow/**
+          files: j5-agent-flow-v${{ steps.get_version.outputs.version }}.zip
           draft: false
           prerelease: false
