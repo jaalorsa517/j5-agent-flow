@@ -2,9 +2,24 @@
 
 Servidor MCP (Model Context Protocol) escrito en TypeScript para la orquestación de agentes siguiendo un flujo o pipeline topológico estricto (Topologic Agent Pipeline).
 
-## Descripción del Proyecto
+## Propósito y Descripción del Proyecto
 
-**j5-agent-flow** es una herramienta diseñada para integrar múltiples agentes especialistas en un flujo de trabajo estructurado. Utiliza el Model Context Protocol para proporcionar capacidades (herramientas y prompts) a clientes (como Gemini o Claude) exponiendo instrucciones de agentes de forma modular.
+El propósito de **j5-agent-flow** es, a través de un MCP, crear un flujo de trabajo estructurado para agentes. Actúa como una agencia donde:
+- Hay **1 orquestador** (a través del prompt principal de `j5-agent-flow`).
+- Hay múltiples **subagentes especialistas** disponibles.
+
+Actualmente, los subagentes disponibles en la agencia son:
+- **Coder**: (`coder.md`)
+- **Coder-test**: (`coder-test.md`)
+- **Planner**: (`planner.md`)
+- **QA-tester**: (`qa-tester.md`)
+- **Test-designer**: (`test-designer.md`)
+- **Validador-planes**: (`validador_planes.md`)
+
+**j5-agent-flow** utiliza el Model Context Protocol para proporcionar estas capacidades (herramientas y prompts) a clientes (como Gemini o Claude) exponiendo las instrucciones de estos agentes de forma modular.
+
+### Prerrequisitos
+- **Engram**: Es necesario para guardar y mantener el contexto entre los distintos subagentes durante el flujo de trabajo.
 
 ## Funcionamiento
 
